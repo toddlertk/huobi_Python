@@ -26,6 +26,7 @@ class RestApiSyncClient(object):
         self.__server_url = kwargs.get("url", get_default_server_url(None))
         self.__init_log = kwargs.get("init_log", None)
         self.__performance_test = kwargs.get("performance_test", None)
+        self.__proxies = kwargs.get("proxies", None)
         if self.__init_log and self.__init_log:
             logger = logging.getLogger("huobi-client")
             logger.setLevel(level=logging.INFO)
@@ -39,6 +40,7 @@ class RestApiSyncClient(object):
         request.host = self.__server_url
         request.header.update({'Content-Type': 'application/json'})
         request.url = url + builder.build_url()
+        request.proxies = self.__proxies
         return request
 
     def __create_request_by_post_with_signature(self, url, builder):
@@ -52,6 +54,7 @@ class RestApiSyncClient(object):
         else:
             request.post_body = builder.post_map
         request.url = url + builder.build_url()
+        request.proxies = self.__proxies
         return request
 
     def __create_request_by_get_with_signature(self, url, builder):
@@ -61,6 +64,7 @@ class RestApiSyncClient(object):
         create_signature(self.__api_key, self.__secret_key, request.method, request.host + url, builder)
         request.header.update({"Content-Type": "application/x-www-form-urlencoded"})
         request.url = url + builder.build_url()
+        request.proxies = self.__proxies
         return request
 
     def create_request(self, method, url, params, parse):
@@ -87,6 +91,7 @@ class RestApiSyncClient(object):
         else:
             raise HuobiApiException(HuobiApiException.INPUT_ERROR, "[Input] " + method + "  is invalid http method")
 
+        request.proxies = self.__proxies
         request.json_parser = parse
 
         return request
@@ -106,6 +111,7 @@ class RestApiSyncClient(object):
 
         request = self.__create_request_by_post_with_signature(url, builder)
         request.json_parser = parse
+        request.proxies = self.__proxies
 
         return request
 

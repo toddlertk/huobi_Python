@@ -24,6 +24,7 @@ class SubscribeClient(object):
         self.__secret_key = kwargs.get("secret_key", None)
         self.__uri = kwargs.get("url", WebSocketDefine.Uri)
         self.__init_log = kwargs.get("init_log", None)
+        self.__proxies = kwargs.get("proxies", None)
         if self.__init_log and self.__init_log:
             logger = logging.getLogger("huobi-client")
             logger.setLevel(level=logging.INFO)
